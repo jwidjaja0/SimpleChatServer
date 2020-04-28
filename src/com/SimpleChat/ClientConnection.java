@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
 
 public class ClientConnection implements Runnable {
     private Socket socket;
@@ -16,11 +17,11 @@ public class ClientConnection implements Runnable {
     private ObjectOutputStream objectOutputStream;
     private int clientNo;
 
-    private BlockingDeque<ServerPacket> incomingQueue;
+    private BlockingQueue<ServerPacket> incomingQueue;
     private List<ClientConnection> clientConnectionList;
     private Thread thread;
 
-    public ClientConnection(Socket socket, int clientNo, BlockingDeque<ServerPacket> incomingQueue, List<ClientConnection> clientConnectionList) {
+    public ClientConnection(Socket socket, int clientNo, BlockingQueue<ServerPacket> incomingQueue, List<ClientConnection> clientConnectionList) {
         this.socket = socket;
         this.clientNo = clientNo;
         this.incomingQueue = incomingQueue;

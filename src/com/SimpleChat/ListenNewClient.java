@@ -7,15 +7,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
 
 public class ListenNewClient implements Runnable {
     private List<ClientConnection> clientConnectionList;
-    private BlockingDeque<ServerPacket> incomingQueue;
+    private BlockingQueue<ServerPacket> incomingQueue;
     private int clientNo;
     private Thread thread;
 
-    public ListenNewClient(List<ClientConnection> clientConnectionList, BlockingDeque<ServerPacket> incomingQueue) {
+    public ListenNewClient(List<ClientConnection> clientConnectionList, BlockingQueue<ServerPacket> incomingQueue) {
         this.clientConnectionList = clientConnectionList;
         this.incomingQueue = incomingQueue;
         clientNo = 0;
