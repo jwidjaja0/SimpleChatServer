@@ -42,6 +42,7 @@ public class ClientConnection implements Runnable {
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             while(true){
                 Packet packet = (Packet) objectInputStream.readObject();
+                System.out.println("Received message from client type: " + packet.getMessageType());
                 incomingQueue.put(new ServerPacket(this, packet));
             }
         }
