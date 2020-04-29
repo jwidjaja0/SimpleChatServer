@@ -8,7 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
-import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 
 public class ClientConnection implements Runnable {
@@ -40,6 +39,7 @@ public class ClientConnection implements Runnable {
         try{
             objectInputStream = new ObjectInputStream(socket.getInputStream());
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+
             while(true){
                 Packet packet = (Packet) objectInputStream.readObject();
                 System.out.println("Received message from client type: " + packet.getMessageType());

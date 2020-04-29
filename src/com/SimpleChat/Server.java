@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class Server {
+public class Server implements Runnable {
 
     ListenNewClient listenNewClient;
     List<ClientConnection> clientConnectionList;
@@ -18,8 +18,22 @@ public class Server {
         incomingQueue = new ArrayBlockingQueue<>(100);
         clientConnectionList = new ArrayList<>();
         chatroomList = new ArrayList<>();
-
-
         listenNewClient = new ListenNewClient(clientConnectionList, incomingQueue);
+
+        Thread thread = new Thread(this);
+        thread.start();
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            try {
+                ServerPacket sp = incomingQueue.take();
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }
