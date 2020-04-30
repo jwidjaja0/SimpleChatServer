@@ -1,5 +1,6 @@
 package com.SimpleChat;
 
+import com.SimpleChat.Database.DataSingleton;
 import com.SimpleChat.Message.ServerPacket;
 
 import java.util.ArrayList;
