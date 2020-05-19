@@ -4,10 +4,7 @@ import com.SimpleChat.Database.DataSingleton;
 import com.SimpleChat.Message.ServerPacket;
 import com.SimpleChat.Messages.Chat.ChatMessage;
 import com.SimpleChat.Messages.Interfaces.Login;
-import com.SimpleChat.Messages.Login.LogOutRequest;
-import com.SimpleChat.Messages.Login.LoginRequest;
-import com.SimpleChat.Messages.Login.SignUpRequest;
-import com.SimpleChat.Messages.Login.SignUpSuccess;
+import com.SimpleChat.Messages.Login.*;
 import com.SimpleChat.Messages.Packet;
 
 import java.io.IOException;
@@ -27,17 +24,23 @@ public class LoginHandler {
     public void handleMessage(ServerPacket serverPacket){
         Packet packet = serverPacket.getPacket();
         if(packet.getMessage() instanceof SignUpRequest){
-            Packet response = DataSingleton.getInstance().userSignUp(packet);
+//            Packet response = DataSingleton.getInstance().userSignUp(packet);
             try {
-                serverPacket.getClientConnection().getObjectOutputStream().writeObject(response);
+//                serverPacket.getClientConnection().getObjectOutputStream().writeObject(response);
+                serverPacket.getClientConnection().getObjectOutputStream().writeObject(new Packet("Login", null, new SignUpFail()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         else if(packet.getMessage() instanceof LoginRequest){
-            String id = packet.getUserID();
-            ClientConnection cc = serverPacket.getClientConnection();
-            activeUserMap.put(id, cc);
+
+//            ClientConnection cc = serverPacket.getClientConnection();
+//            activeUserMap.put(id, cc);
+            try {
+                serverPacket.getClientConnection().getObjectOutputStream().writeObject(new Packet("Login", null, new LoginSuccess()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         else if(packet.getMessage() instanceof LogOutRequest){
             String id = packet.getUserID();
@@ -45,23 +48,6 @@ public class LoginHandler {
         }
     }
 
-    private void handleChatMessage(ServerPacket serverPacket) {
-    }
 
-    private void handleLoginMessage(ServerPacket serverPacket) {
-        Packet packet = serverPacket.getPacket();
-        if(packet.getMessage() instanceof LoginRequest){
 
-        }
-
-        if(packet.getMessage() instanceof SignUpRequest){
-            Packet response = DataSingleton.getInstance().userSignUp(packet);
-            try {
-                serverPacket.getClientConnection().getObjectOutputStream().writeObject(response);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
 }

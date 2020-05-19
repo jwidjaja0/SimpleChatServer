@@ -52,7 +52,6 @@ public class DataSingleton {
         String id = "-1";
         String username = request.getUsername();
         String password = request.getPassword();
-        LoginResponse response = null;
 
         try {
             PreparedStatement prep = connection.prepareStatement("SELECT username, password, clientID FROM userInfo");
@@ -64,26 +63,23 @@ public class DataSingleton {
                 if(user.equals(username) && pw.equals(password)){
                     System.out.println("Login Success");
                     id = String.valueOf(rs.getInt(3));
-                    response = new LoginResponse(true);
+                    return new Packet("Login", id, new LoginSuccess());
                 }
                 else if(user.equals(username) && !pw.equals(password)){
                     System.out.println("Wrong password");
-                    response = new LoginResponse(false, true);
+                    return new Packet("Login", null, new LoginFail(-2));
                 }
                 else{
                     System.out.println("Username doesnt exist");
-                    response = new LoginResponse(false, false);
+                    return new Packet("Login", null, new LoginFail(-1));
                 }
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return new Packet("Login", id, response);
+        return new Packet("Login", id, new LoginFail());
     }
 
-    public Packet uSignUp(Packet packet){
-        return new Packet("Login", null, new SignUpSuccess());
-    }
 
     public Packet userSignUp(Packet packet){
         SignUpRequest request = (SignUpRequest)packet.getMessage();
@@ -98,9 +94,7 @@ public class DataSingleton {
             while(rs.next()){
                 if(rs.getInt(1) > 0){
                     System.out.println("Username already exist");
-                    SignUpResponse response = new SignUpResponse(false);
-                    response.setFailCause(-2);
-                    return new Packet("Login", id, response);
+                    return new Packet("Login", id, new SignUpFail(-1));
                 }
             }
 
@@ -117,9 +111,8 @@ public class DataSingleton {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        SignUpResponse response = new SignUpResponse(false);
-        response.setFailCause(-1);
-        return new Packet("Login", id, response);
+
+        return new Packet("Login", id, new SignUpFail());
     }
 
 }
