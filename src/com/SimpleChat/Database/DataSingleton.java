@@ -1,10 +1,6 @@
 package com.SimpleChat.Database;
 
-import com.SimpleChat.MessageHandler;
-import com.SimpleChat.Messages.Login.LoginRequest;
-import com.SimpleChat.Messages.Login.LoginResponse;
-import com.SimpleChat.Messages.Login.SignUpRequest;
-import com.SimpleChat.Messages.Login.SignUpResponse;
+import com.SimpleChat.Messages.Login.*;
 import com.SimpleChat.Messages.Packet;
 
 import java.sql.*;
@@ -85,6 +81,10 @@ public class DataSingleton {
         return new Packet("Login", id, response);
     }
 
+    public Packet uSignUp(Packet packet){
+        return new Packet("Login", null, new SignUpSuccess());
+    }
+
     public Packet userSignUp(Packet packet){
         SignUpRequest request = (SignUpRequest)packet.getMessage();
         String username = request.getUsername();
@@ -113,7 +113,7 @@ public class DataSingleton {
                     "INSERT INTO userInfo(clientID, username, password, firstName, lastName, email) values(?,?,?,?,?,?)");
             setValues(prep1, id, username, request.getPassword(), request.getFirstName(), request.getLastName(), request.getEmail());
             prep1.executeUpdate();
-            return new Packet("Login", id, new SignUpResponse(true));
+            return new Packet("Login", id, new SignUpSuccess());
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
