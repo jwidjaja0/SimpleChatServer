@@ -1,17 +1,20 @@
 package com.SimpleChat.Database;
 
+import com.SimpleChat.MessageHandler;
 import com.SimpleChat.Messages.Login.LoginRequest;
 import com.SimpleChat.Messages.Login.LoginResponse;
+import com.SimpleChat.Messages.Login.SignUpRequest;
+import com.SimpleChat.Messages.Login.SignUpResponse;
 import com.SimpleChat.Messages.Packet;
 
 import java.sql.*;
+import java.util.UUID;
 
 public class DataSingleton {
     private static DataSingleton instance = new DataSingleton();
     private Connection connection;
 
     private DataSingleton(){
-        setConnection();
     }
 
     public static DataSingleton getInstance(){
@@ -26,6 +29,26 @@ public class DataSingleton {
             e.printStackTrace();
             System.exit(-1);
         }
+    }
+
+    private void setValues(PreparedStatement preparedStatement, Object... values) throws SQLException {
+        for(int i = 0; i < values.length; i++){
+            preparedStatement.setObject(i+1, values[i]);
+        }
+    }
+
+    private boolean isSignUpIDUnique(String id) throws SQLException {
+        PreparedStatement prep = connection.prepareStatement(
+                "select count(clientID) from userInfo where clientID = ?");
+        prep.setString(1, id);
+        ResultSet rs = prep.executeQuery();
+
+        while(rs.next()){
+            if(rs.getInt(1)>0){
+                return false;
+            }
+        }
+        return true;
     }
 
     public Packet userLogin(Packet packet){
@@ -62,5 +85,41 @@ public class DataSingleton {
         return new Packet("Login", id, response);
     }
 
+    public Packet userSignUp(Packet packet){
+        SignUpRequest request = (SignUpRequest)packet.getMessage();
+        String username = request.getUsername();
+        String id = null;
+        try {
+            PreparedStatement prep = connection.prepareStatement("select count(username) from userInfo where username = ?");
+            setValues(prep, username);
+            ResultSet rs = prep.executeQuery();
+
+            //Check if username exist.
+            while(rs.next()){
+                if(rs.getInt(1) > 0){
+                    System.out.println("Username already exist");
+                    SignUpResponse response = new SignUpResponse(false);
+                    response.setFailCause(-2);
+                    return new Packet("Login", id, response);
+                }
+            }
+
+            id = UUID.randomUUID().toString().substring(0,8);
+            while(!isSignUpIDUnique(id)){
+                id = UUID.randomUUID().toString().substring(0,8);
+            }
+
+            PreparedStatement prep1 = connection.prepareStatement(
+                    "INSERT INTO userInfo(clientID, username, password, firstName, lastName, email) values(?,?,?,?,?,?)");
+            setValues(prep1, id, username, request.getPassword(), request.getFirstName(), request.getLastName(), request.getEmail());
+            prep1.executeUpdate();
+            return new Packet("Login", id, new SignUpResponse(true));
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        SignUpResponse response = new SignUpResponse(false);
+        response.setFailCause(-1);
+        return new Packet("Login", id, response);
+    }
 
 }
