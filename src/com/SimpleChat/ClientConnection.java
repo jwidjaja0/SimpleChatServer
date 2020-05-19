@@ -32,6 +32,10 @@ public class ClientConnection implements Runnable {
         thread.start();
     }
 
+    public ObjectOutputStream getObjectOutputStream() {
+        return objectOutputStream;
+    }
+
     @Override
     public void run() {
         System.out.println("ClientConnection no: " + clientNo + " thread started");
