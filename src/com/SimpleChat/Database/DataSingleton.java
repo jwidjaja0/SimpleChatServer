@@ -65,17 +65,14 @@ public class DataSingleton {
                     id = String.valueOf(rs.getInt(3));
                     return new Packet("Login", id, new LoginSuccess());
                 }
-                else if(user.equals(username) && !pw.equals(password)){
-                    System.out.println("Wrong password");
-                    return new Packet("Login", null, new LoginFail(-2));
-                }
-                else{
-                    System.out.println("Username doesnt exist");
-                    return new Packet("Login", null, new LoginFail(-1));
-                }
+
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+
+            System.out.println("Wrong pw or username dont exist");
+            return new Packet("Login", null, new LoginFail(-1));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return new Packet("Login", id, new LoginFail());
     }

@@ -33,11 +33,15 @@ public class LoginHandler {
             }
         }
         else if(packet.getMessage() instanceof LoginRequest){
+            Packet response = DataSingleton.getInstance().userLogin(packet);
+            if(response.getMessage() instanceof LoginSuccess){
+                ClientConnection cc = serverPacket.getClientConnection();
+                activeUserMap.put(response.getUserID(), cc);
+            }
 
-//            ClientConnection cc = serverPacket.getClientConnection();
-//            activeUserMap.put(id, cc);
             try {
-                serverPacket.getClientConnection().getObjectOutputStream().writeObject(new Packet("Login", null, new LoginSuccess()));
+                serverPacket.getClientConnection().getObjectOutputStream().writeObject(response);
+                //serverPacket.getClientConnection().getObjectOutputStream().writeObject(new Packet("Login", null, new LoginSuccess()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
