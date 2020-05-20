@@ -54,16 +54,23 @@ public class DataSingleton {
         String password = request.getPassword();
 
         try {
-            PreparedStatement prep = connection.prepareStatement("SELECT username, password, clientID FROM userInfo");
+            PreparedStatement prep = connection.prepareStatement("SELECT username, password, clientID, isActive FROM userInfo");
             ResultSet rs = prep.executeQuery();
 
             while(rs.next()){
                 String user = rs.getString(1);
                 String pw = rs.getString(2);
                 if(user.equals(username) && pw.equals(password)){
+                    boolean isActive = rs.getBoolean(4);
                     System.out.println("Login Success");
                     id = String.valueOf(rs.getInt(3));
-                    return new Packet("Login", id, new LoginSuccess());
+                    if(isActive){
+                        return new Packet("Login", id, new LoginSuccess());
+                    }
+                    else{
+                        return new Packet("Login", id, new LoginFail(-2));
+                    }
+
                 }
 
             }
