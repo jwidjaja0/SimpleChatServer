@@ -22,6 +22,7 @@ public class LoginHandler {
     }
 
     public void handleMessage(ServerPacket serverPacket){
+        //TODO: double check signuprequest method processing
         Packet packet = serverPacket.getPacket();
         if(packet.getMessage() instanceof SignUpRequest){
 //            Packet response = DataSingleton.getInstance().userSignUp(packet);
