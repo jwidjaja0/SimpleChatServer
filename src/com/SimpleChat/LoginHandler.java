@@ -25,10 +25,9 @@ public class LoginHandler {
         //TODO: double check signuprequest method processing
         Packet packet = serverPacket.getPacket();
         if(packet.getMessage() instanceof SignUpRequest){
-//            Packet response = DataSingleton.getInstance().userSignUp(packet);
+            Packet response = DataSingleton.getInstance().userSignUp(packet);
             try {
-//                serverPacket.getClientConnection().getObjectOutputStream().writeObject(response);
-                serverPacket.getClientConnection().getObjectOutputStream().writeObject(new Packet("Login", null, new SignUpFail()));
+                serverPacket.getClientConnection().getObjectOutputStream().writeObject(response);
             } catch (IOException e) {
                 e.printStackTrace();
             }
