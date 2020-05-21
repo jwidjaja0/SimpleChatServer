@@ -26,7 +26,7 @@ public class ListenNewClient implements Runnable {
     @Override
     public void run() {
         try{
-            System.out.println("ListeNewClient thread started");
+            System.out.println("ListenNewClient thread started");
             ServerSocket serverSocket = new ServerSocket(8000);
 
             while(true){
@@ -38,7 +38,6 @@ public class ListenNewClient implements Runnable {
                 ClientConnection clientConnection = new ClientConnection(socket, clientNo, incomingQueue, clientConnectionList);
 
             }
-
 
         } catch (IOException e) {
             e.printStackTrace();

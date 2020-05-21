@@ -46,19 +46,23 @@ public class ClientConnection implements Runnable {
 
             while(true){
                 Packet packet = (Packet) objectInputStream.readObject();
-                System.out.println("Received message from client type: " + packet.getMessageType());
+                System.out.println("Received message from client type: " + packet.getMessage().getClass().toString());
                 incomingQueue.put(new ServerPacket(this, packet));
             }
         }
         catch(IOException e){
-            e.printStackTrace();
+            System.out.println("Client disconnected");
         } catch(ClassNotFoundException e){
+            System.out.println("Class not found");
             e.printStackTrace();
         } catch (InterruptedException e) {
+            System.out.println("client disconnect");
             e.printStackTrace();
         }
         finally{
             clientConnectionList.remove(this);
+            //logout client if logged in
+
         }
 
     }

@@ -47,6 +47,7 @@ public class LoginHandler {
             }
         }
         else if(packet.getMessage() instanceof LogOutRequest){
+            System.out.println("Removing user from logged in list");
             String id = packet.getUserID();
             activeUserMap.remove(id);
         }

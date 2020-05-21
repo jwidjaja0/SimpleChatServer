@@ -65,7 +65,7 @@ public class DataSingleton {
                     System.out.println("Login Success");
                     id = String.valueOf(rs.getInt(3));
                     if(isActive){
-                        return new Packet("Login", id, new LoginSuccess());
+                        return new Packet("Login", id, new LoginSuccess(id));
                     }
                     else{
                         return new Packet("Login", id, new LoginFail(-2));
