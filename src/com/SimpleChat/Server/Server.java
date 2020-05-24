@@ -1,4 +1,4 @@
-package com.SimpleChat;
+package com.SimpleChat.Server;
 
 import com.SimpleChat.Database.DataSingleton;
 import com.SimpleChat.Message.ServerPacket;
@@ -19,10 +19,11 @@ public class Server implements Runnable {
     private ListenNewClient listenNewClient;
     private List<ClientConnection> clientConnectionList;
     private BlockingQueue<ServerPacket> incomingQueue;
-    private BlockingQueue<Packet> outgoingQueue;
+    private BlockingQueue<ServerPacket> outgoingQueue;
     private List<Chatroom> chatroomList;
 
     private Map<String, ClientConnection> activeUserMap;
+    private ServerSender serverSender;
 
     public Server() {
         incomingQueue = new ArrayBlockingQueue<>(100);
@@ -32,6 +33,9 @@ public class Server implements Runnable {
         listenNewClient = new ListenNewClient(clientConnectionList, incomingQueue);
         activeUserMap = new HashMap<>();
         loginHandler = new LoginHandler(activeUserMap);
+
+        serverSender = new ServerSender(outgoingQueue);
+        Outgoing.getInstance().setOutgoingQueue(outgoingQueue);
 
         Thread thread = new Thread(this);
         thread.start();
@@ -55,7 +59,6 @@ public class Server implements Runnable {
             try {
                 ServerPacket sp = incomingQueue.take();
                 messageFilter(sp);
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

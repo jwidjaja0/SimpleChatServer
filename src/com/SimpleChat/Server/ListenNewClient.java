@@ -1,4 +1,4 @@
-package com.SimpleChat;
+package com.SimpleChat.Server;
 
 import com.SimpleChat.Message.ServerPacket;
 

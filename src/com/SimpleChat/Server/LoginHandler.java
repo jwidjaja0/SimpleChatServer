@@ -1,9 +1,7 @@
-package com.SimpleChat;
+package com.SimpleChat.Server;
 
 import com.SimpleChat.Database.DataSingleton;
 import com.SimpleChat.Message.ServerPacket;
-import com.SimpleChat.Messages.Chat.ChatMessage;
-import com.SimpleChat.Messages.Interfaces.Login;
 import com.SimpleChat.Messages.Login.*;
 import com.SimpleChat.Messages.Packet;
 
@@ -24,27 +22,29 @@ public class LoginHandler {
     public void handleMessage(ServerPacket serverPacket){
         //TODO: double check signuprequest method processing
         Packet packet = serverPacket.getPacket();
+        ClientConnection cc = serverPacket.getClientConnection();
         if(packet.getMessage() instanceof SignUpRequest){
             Packet response = DataSingleton.getInstance().userSignUp(packet);
-            try {
-                serverPacket.getClientConnection().getObjectOutputStream().writeObject(response);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Outgoing.getInstance().addToQueue(response, cc);
+//            try {
+//                serverPacket.getClientConnection().getObjectOutputStream().writeObject(response);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
         else if(packet.getMessage() instanceof LoginRequest){
             Packet response = DataSingleton.getInstance().userLogin(packet);
             if(response.getMessage() instanceof LoginSuccess){
-                ClientConnection cc = serverPacket.getClientConnection();
                 activeUserMap.put(response.getUserID(), cc);
+                Outgoing.getInstance().addToQueue(response, cc);
             }
-
-            try {
-                serverPacket.getClientConnection().getObjectOutputStream().writeObject(response);
-                //serverPacket.getClientConnection().getObjectOutputStream().writeObject(new Packet("Login", null, new LoginSuccess()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//
+//            try {
+//                serverPacket.getClientConnection().getObjectOutputStream().writeObject(response);
+//                //serverPacket.getClientConnection().getObjectOutputStream().writeObject(new Packet("Login", null, new LoginSuccess()));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
         else if(packet.getMessage() instanceof LogOutRequest){
             System.out.println("Removing user from logged in list");

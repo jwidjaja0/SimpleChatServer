@@ -1,7 +1,7 @@
 package com.SimpleChat.Message;
 
-import com.SimpleChat.ClientConnection;
 import com.SimpleChat.Messages.Packet;
+import com.SimpleChat.Server.ClientConnection;
 
 
 public class ServerPacket {
