@@ -119,4 +119,10 @@ public class DataSingleton {
         return new Packet("Login", id, new SignUpFail());
     }
 
+    public String insertNewChatroom(Packet packet){
+
+
+        return null;
+    }
+
 }

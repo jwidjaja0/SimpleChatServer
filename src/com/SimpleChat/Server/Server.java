@@ -15,6 +15,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class Server implements Runnable {
     private LoginHandler loginHandler;
+    private ChatHandler chatHandler;
 
     private ListenNewClient listenNewClient;
     private List<ClientConnection> clientConnectionList;
@@ -32,7 +33,9 @@ public class Server implements Runnable {
         chatroomList = new ArrayList<>();
         listenNewClient = new ListenNewClient(clientConnectionList, incomingQueue);
         activeUserMap = new HashMap<>();
+
         loginHandler = new LoginHandler(activeUserMap);
+        chatHandler = new ChatHandler();
 
         serverSender = new ServerSender(outgoingQueue);
         Outgoing.getInstance().setOutgoingQueue(outgoingQueue);
