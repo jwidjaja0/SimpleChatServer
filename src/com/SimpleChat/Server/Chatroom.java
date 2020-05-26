@@ -12,6 +12,8 @@ public class Chatroom {
 
     private List<User> userList;
 
+
+
     public Chatroom(String roomID, String name, String password) {
         this.roomID = roomID;
         this.name = name;
@@ -34,6 +36,9 @@ public class Chatroom {
         }
     }
 
+    public List<User> getUserList() {
+        return userList;
+    }
 
     public String getRoomID() {
         return roomID;
