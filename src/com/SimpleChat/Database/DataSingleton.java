@@ -1,5 +1,6 @@
 package com.SimpleChat.Database;
 
+import com.SimpleChat.Messages.Chat.JoinChatroomRequest;
 import com.SimpleChat.Messages.Chat.NewChatroomFail;
 import com.SimpleChat.Messages.Chat.NewChatroomRequest;
 import com.SimpleChat.Messages.Chat.NewChatroomSuccess;
@@ -155,6 +156,13 @@ public class DataSingleton {
         }
 
         return response;
+    }
+
+    public Packet insertUserToRoom(Packet packet){
+        JoinChatroomRequest request = (JoinChatroomRequest)packet.getMessage();
+
+
+        return null;
     }
 
 }
