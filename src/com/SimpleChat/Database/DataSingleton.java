@@ -1,5 +1,8 @@
 package com.SimpleChat.Database;
 
+import com.SimpleChat.Messages.Chat.NewChatroomFail;
+import com.SimpleChat.Messages.Chat.NewChatroomRequest;
+import com.SimpleChat.Messages.Chat.NewChatroomSuccess;
 import com.SimpleChat.Messages.Login.*;
 import com.SimpleChat.Messages.Packet;
 
@@ -107,6 +110,7 @@ public class DataSingleton {
                 id = UUID.randomUUID().toString().substring(0,8);
             }
 
+            //Insert user to database
             PreparedStatement prep1 = connection.prepareStatement(
                     "INSERT INTO userInfo(clientID, username, password, firstName, lastName, email) values(?,?,?,?,?,?)");
             setValues(prep1, id, username, request.getPassword(), request.getFirstName(), request.getLastName(), request.getEmail());
@@ -119,10 +123,38 @@ public class DataSingleton {
         return new Packet("Login", id, new SignUpFail());
     }
 
-    public String insertNewChatroom(Packet packet){
+    public Packet insertNewChatroom(Packet packet){
+        NewChatroomRequest request = (NewChatroomRequest)packet.getMessage();
+        String name = request.getChatroomName();
+        String password = request.getPassword();
+        Packet response;
 
+        try {
+            //Insert new room to database
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO chatrooms(roomName, password) values(?,?)");
+            setValues(preparedStatement, name, password);
+            int affected = preparedStatement.executeUpdate();
+            System.out.println("affected: " + affected);
 
-        return null;
+            //Get the room id from database
+            PreparedStatement prep1 = connection.prepareStatement("SELECT id from chatrooms WHERE roomName = ?");
+            prep1.setString(1, name);
+            ResultSet resultSet = prep1.executeQuery();
+
+            int roomID = -1;
+            while(resultSet.next()){
+                roomID = resultSet.getInt(1);
+            }
+            String chatRoomID = String.valueOf(roomID);
+            NewChatroomSuccess success = new NewChatroomSuccess(chatRoomID, name, password);
+            response = new Packet("Chat", packet.getUserID(), success);
+
+        } catch (SQLException throwables) {
+            //throwables.printStackTrace();
+            response = new Packet("Chat", packet.getUserID(), new NewChatroomFail());
+        }
+
+        return response;
     }
 
 }
