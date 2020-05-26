@@ -35,7 +35,7 @@ public class Server implements Runnable {
         activeUserMap = new HashMap<>();
 
         loginHandler = new LoginHandler(activeUserMap);
-        chatHandler = new ChatHandler(chatroomList);
+        chatHandler = new ChatHandler(chatroomList, activeUserMap);
 
         serverSender = new ServerSender(outgoingQueue);
         Outgoing.getInstance().setOutgoingQueue(outgoingQueue);

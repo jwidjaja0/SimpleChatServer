@@ -3,22 +3,29 @@ package com.SimpleChat.Server;
 import com.SimpleChat.Database.DataSingleton;
 import com.SimpleChat.Message.ServerPacket;
 import com.SimpleChat.Messages.Chat.*;
+import com.SimpleChat.Messages.Interfaces.Chat;
 import com.SimpleChat.Messages.Packet;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 public class ChatHandler {
+    //better to use hashmap, for fast lookup of chatroom
     private List<Chatroom> chatroomList;
+    private Map<String, ClientConnection> activeUserMap;
 
-    public ChatHandler(List<Chatroom> chatroomList) {
+
+    public ChatHandler(List<Chatroom> chatroomList, Map<String, ClientConnection> activeUserMap) {
         this.chatroomList = chatroomList;
+        this.activeUserMap = activeUserMap;
     }
 
     public void handleMessage(ServerPacket serverPacket){
         Packet packet = serverPacket.getPacket();
         String id = packet.getUserID();
         ClientConnection cc = serverPacket.getClientConnection();
+
         if(packet.getMessage() instanceof NewChatroomRequest){
             NewChatroomRequest request = (NewChatroomRequest)packet.getMessage();
             Packet response = DataSingleton.getInstance().insertNewChatroom(packet);
@@ -26,6 +33,7 @@ public class ChatHandler {
             if(response.getMessage() instanceof NewChatroomSuccess){
                 NewChatroomSuccess success = (NewChatroomSuccess)response.getMessage();
                 Chatroom chatroom = new Chatroom(success.getRoomID(), success.getName(), success.getPassword());
+                chatroom.setActiveUserMap(activeUserMap);
             }
 
             Outgoing.getInstance().addToQueue(response, cc);
@@ -80,6 +88,20 @@ public class ChatHandler {
                 }
             }
         }
+
+        else if(packet.getMessage() instanceof ChatMessage){
+            ChatMessage message = (ChatMessage)packet.getMessage();
+            String roomName = message.getChatroomName();
+
+            for(Chatroom ch : chatroomList){
+                if(ch.getName().equals(roomName)){
+                    //found correct room, propagate message to everyone in room
+                    ch.distributeMessage(message);
+                }
+            }
+
+        }
+
     }
 
     private Packet makeChatPacket(String id, Serializable message){
