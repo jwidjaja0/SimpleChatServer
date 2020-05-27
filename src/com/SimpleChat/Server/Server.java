@@ -3,6 +3,7 @@ package com.SimpleChat.Server;
 import com.SimpleChat.Database.DataSingleton;
 import com.SimpleChat.Message.ServerPacket;
 import com.SimpleChat.Messages.Chat.ChatMessage;
+import com.SimpleChat.Messages.Interfaces.Chat;
 import com.SimpleChat.Messages.Interfaces.Login;
 import com.SimpleChat.Messages.Packet;
 
@@ -49,8 +50,8 @@ public class Server implements Runnable {
         if(packet.getMessage() instanceof Login){
             loginHandler.handleMessage(serverPacket);
         }
-        else if(packet.getMessage() instanceof ChatMessage){
-
+        else if(packet.getMessage() instanceof Chat){
+            chatHandler.handleMessage(serverPacket);
         }
     }
 

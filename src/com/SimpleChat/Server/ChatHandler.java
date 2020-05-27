@@ -34,6 +34,8 @@ public class ChatHandler {
                 NewChatroomSuccess success = (NewChatroomSuccess)response.getMessage();
                 Chatroom chatroom = new Chatroom(success.getRoomID(), success.getName(), success.getPassword());
                 chatroom.setActiveUserMap(activeUserMap);
+                chatroomList.add(chatroom);
+                System.out.println("# of chatrooms: " + chatroomList.size());
             }
 
             Outgoing.getInstance().addToQueue(response, cc);
@@ -99,7 +101,6 @@ public class ChatHandler {
                     ch.distributeMessage(message);
                 }
             }
-
         }
 
     }
