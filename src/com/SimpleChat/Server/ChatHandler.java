@@ -5,8 +5,10 @@ import com.SimpleChat.Message.ServerPacket;
 import com.SimpleChat.Messages.Chat.*;
 import com.SimpleChat.Messages.Interfaces.Chat;
 import com.SimpleChat.Messages.Packet;
+import com.SimpleChat.Messages.User.UserInfo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +34,7 @@ public class ChatHandler {
 
             if(response.getMessage() instanceof NewChatroomSuccess){
                 NewChatroomSuccess success = (NewChatroomSuccess)response.getMessage();
-                Chatroom chatroom = new Chatroom(success.getRoomID(), success.getName(), success.getPassword());
+                Chatroom chatroom = new Chatroom(success.getRoomID(), success.getRoomName(), success.getPassword());
                 chatroom.setActiveUserMap(activeUserMap);
                 chatroomList.add(chatroom);
                 System.out.println("# of chatrooms: " + chatroomList.size());
@@ -44,11 +46,11 @@ public class ChatHandler {
         }
         else if(packet.getMessage() instanceof JoinChatroomRequest){
             JoinChatroomRequest request = (JoinChatroomRequest)packet.getMessage();
-            String name = request.getChatroomName();
+            String roomName = request.getChatroomName();
             String roomPassword = request.getChatroomName();
 
             //Find chatroom by name
-            int index = chatroomList.indexOf(name);
+            int index = chatroomList.indexOf(roomName);
             if(index == -1){
                 Packet response = new Packet("Chat", id, new JoinChatroomFail());
                 Outgoing.getInstance().addToQueue(response, cc);
@@ -56,14 +58,24 @@ public class ChatHandler {
             else{
                 //TODO: rethink data structure, maybe set is better? arraylist will require to traverse to find room
                 User user = new User(packet.getUserID());
-                boolean isJoined = chatroomList.get(index).insertUser(roomPassword, user);
+                Chatroom chatroom = chatroomList.get(index);
+                boolean isJoined = chatroom.insertUser(roomPassword, user);
 
                 //if password matches
                 if(isJoined){
                     //TODO: add to database, think how to store this in database
+                    ChatroomDetail detail = DataSingleton.getInstance().getChatroomDetail(roomName);
+                    ChatMessageHistory history = DataSingleton.getInstance().getChatHistory(roomName);
+                    List<User> userList = chatroom.getUserList();
+                    List<UserInfo> userInfoList = new ArrayList<>();
 
-                    JoinChatroomSuccess success = new JoinChatroomSuccess();
-                    Packet response = new Packet("Chat", packet.getUserID(), new JoinChatroomSuccess());
+                    for(User u: userList){
+                        UserInfo userInfo = new UserInfo(u.getNickname(), u.getUserID());
+                        userInfoList.add(userInfo);
+                    }
+
+                    JoinChatroomSuccess success = new JoinChatroomSuccess(detail, history, userInfoList);
+                    Packet response = new Packet("Chat", packet.getUserID(), success);
                     Outgoing.getInstance().addToQueue(response, cc);
                 }
                 else{

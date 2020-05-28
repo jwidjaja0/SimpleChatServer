@@ -1,9 +1,6 @@
 package com.SimpleChat.Database;
 
-import com.SimpleChat.Messages.Chat.JoinChatroomRequest;
-import com.SimpleChat.Messages.Chat.NewChatroomFail;
-import com.SimpleChat.Messages.Chat.NewChatroomRequest;
-import com.SimpleChat.Messages.Chat.NewChatroomSuccess;
+import com.SimpleChat.Messages.Chat.*;
 import com.SimpleChat.Messages.Login.*;
 import com.SimpleChat.Messages.Packet;
 
@@ -165,6 +162,12 @@ public class DataSingleton {
         return null;
     }
 
+    //TODO: Implement these two functions
+    public ChatroomDetail getChatroomDetail(String roomName) {
+        return null;
+    }
 
-
+    public ChatMessageHistory getChatHistory(String roomName) {
+        return null;
+    }
 }
