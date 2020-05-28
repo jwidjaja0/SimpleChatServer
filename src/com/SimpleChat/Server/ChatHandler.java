@@ -47,7 +47,7 @@ public class ChatHandler {
         else if(packet.getMessage() instanceof JoinChatroomRequest){
             JoinChatroomRequest request = (JoinChatroomRequest)packet.getMessage();
             String roomName = request.getChatroomName();
-            String roomPassword = request.getChatroomName();
+            String roomPassword = request.getPassword();
 
             //Find chatroom by name
             int index = chatroomList.indexOf(roomName);
@@ -63,8 +63,9 @@ public class ChatHandler {
 
                 //if password matches
                 if(isJoined){
-                    //TODO: add to database, think how to store this in database
-                    ChatroomDetail detail = DataSingleton.getInstance().getChatroomDetail(roomName);
+                    System.out.println("Joined");
+                    //TODO: add chatroom to database, think how to store this in database
+                    ChatroomDetail detail = new ChatroomDetail(chatroom.getName(), chatroom.getRoomID());
                     ChatMessageHistory history = DataSingleton.getInstance().getChatHistory(roomName);
                     List<User> userList = chatroom.getUserList();
                     List<UserInfo> userInfoList = new ArrayList<>();
