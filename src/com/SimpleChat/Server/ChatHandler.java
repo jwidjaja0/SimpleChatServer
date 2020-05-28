@@ -50,7 +50,14 @@ public class ChatHandler {
             String roomPassword = request.getPassword();
 
             //Find chatroom by name
-            int index = chatroomList.indexOf(roomName);
+            int index = -1;
+            for(int i =0; i < chatroomList.size(); i++){
+                if(chatroomList.get(i).getName().equals(roomName)){
+                    index = i;
+                    break;
+                }
+            }
+
             if(index == -1){
                 Packet response = new Packet("Chat", id, new JoinChatroomFail());
                 Outgoing.getInstance().addToQueue(response, cc);
