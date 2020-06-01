@@ -64,7 +64,7 @@ public class ChatHandler {
             }
             else{
                 //TODO: rethink data structure, maybe set is better? arraylist will require to traverse to find room
-                User user = new User(packet.getUserID());
+                User user = new User(packet.getUserID(), request.getUserInfo().getNickname());
                 Chatroom chatroom = chatroomList.get(index);
                 boolean isJoined = chatroom.insertUser(roomPassword, user);
 

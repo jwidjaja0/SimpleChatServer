@@ -5,8 +5,9 @@ public class User {
     private String nickname;
     private String userID;
 
-    public User(String userID) {
+    public User(String userID, String nickname) {
         this.userID = userID;
+        this.nickname = nickname;
     }
 
     public String getUserID() {

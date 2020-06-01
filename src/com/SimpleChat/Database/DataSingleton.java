@@ -1,8 +1,10 @@
 package com.SimpleChat.Database;
 
 import com.SimpleChat.Messages.Chat.*;
+import com.SimpleChat.Messages.Interfaces.Chat;
 import com.SimpleChat.Messages.Login.*;
 import com.SimpleChat.Messages.Packet;
+import com.SimpleChat.Messages.User.UserInfo;
 
 import java.sql.*;
 import java.util.UUID;
@@ -66,7 +68,9 @@ public class DataSingleton {
                     System.out.println("Login Success");
                     id = String.valueOf(rs.getInt(3));
                     if(isActive){
-                        return new Packet("Login", id, new LoginSuccess(id));
+                        //TODO: nickname is currently username, need to change to actual nickname
+                        UserInfo userInfo = new UserInfo(user, id);
+                        return new Packet("Login", id, new LoginSuccess(userInfo));
                     }
                     else{
                         return new Packet("Login", id, new LoginFail(-2));
@@ -162,12 +166,16 @@ public class DataSingleton {
         return null;
     }
 
-    //TODO: Implement these two functions
+    //TODO: Get correct roomID
     public ChatroomDetail getChatroomDetail(String roomName) {
-        return null;
+        ChatroomDetail detail = new ChatroomDetail(roomName, "");
+        return detail;
     }
 
+    //TODO: Implement getting chatMessage properly
     public ChatMessageHistory getChatHistory(String roomName) {
-        return null;
+        ChatMessageHistory chatMessageHistory = new ChatMessageHistory();
+
+        return chatMessageHistory;
     }
 }
