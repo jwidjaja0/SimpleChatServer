@@ -34,6 +34,7 @@ public class ListenNewClient implements Runnable {
                 clientNo++;
                 String startingMessage = "Starting thread for client " + clientNo + " at " + new Date() + "\n";
                 System.out.println(startingMessage);
+                System.out.println("number clients: " + clientNo);
 
                 ClientConnection clientConnection = new ClientConnection(socket, clientNo, incomingQueue, clientConnectionList);
 

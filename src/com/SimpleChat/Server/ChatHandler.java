@@ -85,6 +85,7 @@ public class ChatHandler {
                     JoinChatroomSuccess success = new JoinChatroomSuccess(detail, history, userInfoList);
                     Packet response = new Packet("Chat", packet.getUserID(), success);
                     Outgoing.getInstance().addToQueue(response, cc);
+                    System.out.println("sending joinchatroomsuccess");
                 }
                 else{
                     //TODO: modify JoinChatRoomFail to indicate fail causes. (room not exist, wrong password)
