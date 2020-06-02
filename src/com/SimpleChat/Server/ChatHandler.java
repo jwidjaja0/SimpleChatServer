@@ -40,7 +40,12 @@ public class ChatHandler {
                 System.out.println("# of chatrooms: " + chatroomList.size());
             }
 
-            Outgoing.getInstance().addToQueue(response, cc);
+            //only sending to one client
+//            Outgoing.getInstance().addToQueue(response, cc);
+            //send to all clients
+            activeUserMap.forEach((k,v) -> Outgoing.getInstance().addToQueue(response,v));
+
+
             //TODO: now also put client in the new chatroom, client side?
 
         }
@@ -84,7 +89,12 @@ public class ChatHandler {
 
                     JoinChatroomSuccess success = new JoinChatroomSuccess(detail, history, userInfoList);
                     Packet response = new Packet("Chat", packet.getUserID(), success);
+
+                    //only sending to that client. need to send to all client in that room
                     Outgoing.getInstance().addToQueue(response, cc);
+
+                    //TODO:also send notification to all other users in chatroom that this user joins.
+
                     System.out.println("sending joinchatroomsuccess");
                 }
                 else{
